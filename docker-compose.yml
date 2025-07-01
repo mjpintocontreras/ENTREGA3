@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:6
+    container_name: mongo_waze
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # Scraper de Waze
+  scraper:
+    build:
+      context: ./scraper
+    container_name: scraper
+    depends_on:
+      - mongodb
+    restart: always
+
+  # Generador de tráfico sintético
+  traffic_generator:
+    build:
+      context: ./traffic_generator
+    container_name: traffic_generator
+    depends_on:
+      - mongodb
+    restart: always
+
+  # Procesamiento con Apache Pig
+  pig-procesamiento:
+    build:
+      context: ./pig
+    container_name: procesamiento_pig
+    volumes:
+      - ./pig:/app
+    working_dir: /app
+    tty: true
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  # Kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
+volumes:
+  mongo_data:
+  esdata:

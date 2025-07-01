@@ -1,0 +1,7 @@
+__pycache__/
+*.log
+*.pyc
+pig/salidas/
+traffic_generator/*.json
+*.zip
+*.mp4
