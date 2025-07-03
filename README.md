@@ -22,4 +22,6 @@ ve a stack management luego a kibana en saved objects seleccionar import:
 seleccionar el archivo visualizaciones_kibana/dashboard_tarea3.ndjson
 y accede a las visualizaciones directamente en la Dashboards de Kibana.
 
+LINK AL  VIDEO -> https://youtu.be/OQF4I8V2LNs
+
 
